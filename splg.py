@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import sys
-
+from itertools import permutations
 
 #Colours
 red="\033[1;31m"
@@ -48,6 +50,39 @@ action("Generate a password list based on")
 action("your inputs, e.g. name,surname...")
 action("if you don't want to fill in one ")
 action("of the required fields, just type")
+action(" enter and continue.")
+alert("=================================")
+
+
+ofile = get("Output file(with passwordlist): ")
+
+try:
+	out = open(ofile,"w+")
+except:
+	sys.exit("Failed creating output file: ck")
+
+infos.append(get("Insert name: "))
+infos.append(get("Insert surname: "))
+infos.extend(processBirthday(get("Birthday (Please use one of those formats: D-M-Y or D/M/Y): ")))
+infos.append(get("Nickname: "))
+
+action("Add any additional value, leave empty to start building passwordlist")
+x = 'BEGIN'
+
+while x != '':
+	x = get("Value: ")
+	infos.append(x)
+
+for i in range(0, len(infos)+1):
+        for subset in permutations(infos, i):
+		if ''.join(subset) not in generated:
+			generated.append(''.join(subset))
+
+out.write("\n".join(generated))
+action("Generated "+str(len(generated))+" passwords!")
+out.close()
+
+	
 action(" enter and continue.")
 alert("=================================")
 
